@@ -351,9 +351,9 @@ resource "helm_release" "this" {
     external_secrets_role_arn             = aws_iam_role.external_secrets.arn
     external_dns_role_arn                 = aws_iam_role.external_dns.arn
     external_dns_domains                  = [var.domain]
-    acm_arn                               = module.r53-acm.certificate_arn
+    acm_arn                               = var.certificate_arn
     argocd_hostname                       = format("argocd.%s", var.domain)
     argocd_lb_name                        = var.cluster_name
-    acm_arn                               = module.r53-acm.certificate_arn
+    acm_arn                               = var.certificate_arn
   })]
 }
