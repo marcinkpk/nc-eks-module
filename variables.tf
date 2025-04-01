@@ -348,10 +348,6 @@ variable "domain" {
   type = string
 }
 
-variable "vpc_cidr" {
-  type = string
-}
-
 variable "certificate_arn" {
   type = string
 }
