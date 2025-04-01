@@ -21,10 +21,7 @@
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_r53-acm"></a> [r53-acm](#module\_r53-acm) | ./modules/r53-acm | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | ./modules/vpc | n/a |
+No modules.
 
 ## Resources
 
