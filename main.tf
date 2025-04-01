@@ -2,6 +2,12 @@
 ### iam
 ###
 
+resource "aws_iam_openid_connect_provider" "this" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = data.tls_certificate.this.certificates[*].sha1_fingerprint
+  url             = aws_eks_cluster.this.identity[0].oidc[0].issuer
+}
+
 resource "aws_iam_role" "team" {
   name               = format("%s-nc-workshop", var.cluster_name)
   assume_role_policy = data.aws_iam_policy_document.team_assume_role.json
@@ -54,6 +60,68 @@ resource "aws_iam_instance_profile" "node_group" {
   }
 }
 
+
+resource "aws_iam_policy" "cluster_autoscaler" {
+  name   = format("%s-eks-cluster-autoscaler", var.cluster_name)
+  policy = data.aws_iam_policy_document.cluster_autoscaler.json
+}
+
+resource "aws_iam_role" "cluster_autoscaler" {
+  name               = format("%s-eks-cluster-autoscaler", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.cluster_autoscaler_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "cluster_autoscaler" {
+  policy_arn = aws_iam_policy.cluster_autoscaler.arn
+  role       = aws_iam_role.cluster_autoscaler.name
+}
+
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+  name_prefix = format("%s-eks-aws-load-balancer-controller", var.cluster_name)
+  policy      = data.aws_iam_policy_document.aws_load_balancer_controller.json
+}
+
+resource "aws_iam_role" "aws_load_balancer_controller" {
+  name               = format("%s-eks-aws-load-balancer-controller", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller" {
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+  role       = aws_iam_role.aws_load_balancer_controller.name
+}
+
+resource "aws_iam_policy" "external_secrets" {
+  name_prefix = format("%s-eks-external-secrets", var.cluster_name)
+  policy      = data.aws_iam_policy_document.external_secrets.json
+}
+
+resource "aws_iam_role" "external_secrets" {
+  name               = format("%s-eks-external-secrets", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.external_secrets_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "external_secrets" {
+  policy_arn = aws_iam_policy.external_secrets.arn
+  role       = aws_iam_role.external_secrets.name
+}
+
+resource "aws_iam_policy" "external_dns" {
+  name_prefix = format("%s-eks-external-dns", var.cluster_name)
+  policy      = data.aws_iam_policy_document.external_dns.json
+}
+
+resource "aws_iam_role" "external_dns" {
+  name               = format("%s-eks-external-dns", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.external_dns_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "external_dns" {
+  policy_arn = aws_iam_policy.external_dns.arn
+  role       = aws_iam_role.external_dns.name
+}
+
+
 ###
 ### eks control plane
 ###
@@ -104,8 +172,7 @@ resource "aws_vpc_security_group_ingress_rule" "node_group_allow_control_plane_k
 
 resource "aws_vpc_security_group_ingress_rule" "node_group_allow_itself" {
   security_group_id            = aws_security_group.node_group.id
-  referenced_security_group_id = aws_security_group.control_plane.id
-  cidr_ipv4                    = "0.0.0.0/0"
+  referenced_security_group_id = aws_security_group.node_group.id
   ip_protocol                  = "-1"
   description                  = "allow all traffic within the node group"
 }
@@ -143,8 +210,8 @@ resource "aws_eks_addon" "this" {
   addon_name                  = each.key
   addon_version               = each.value.addon_version
   resolve_conflicts_on_create = each.value.resolve_conflicts_on_create
-
   resolve_conflicts_on_update = each.value.resolve_conflicts_on_update
+  service_account_role_arn    = each.value.service_account_role_arn ? format("arn:aws:iam::%s:role/%s-eks-%s", data.aws_caller_identity.this.account_id, var.cluster_name, each.key) : null
   configuration_values        = jsonencode(each.value["configuration_values"])
 }
 
@@ -259,4 +326,34 @@ resource "aws_eks_node_group" "this" {
   lifecycle {
     ignore_changes = [scaling_config[0].desired_size]
   }
+}
+
+resource "helm_release" "this" {
+  depends_on = [
+    aws_iam_role.aws_load_balancer_controller,
+    aws_iam_role.external_secrets,
+    aws_iam_role.cluster_autoscaler
+  ]
+  for_each         = var.helm_charts
+  name             = try(each.value["name"], each.key)
+  namespace        = try(each.value["namespace"], "default")
+  create_namespace = true
+  chart            = try(each.value["chart"], each.key)
+  repository       = try(each.value["repository"], null)
+  version          = try(each.value["version"], ">0.0.0")
+  timeout          = 120
+
+  values = [templatefile(format("%s/%s", path.module, var.helm_charts[each.key]["template_file"]), {
+    aws_region                            = data.aws_region.this.name
+    cluster_name                          = aws_eks_cluster.this.id
+    cluster_autoscaler_role_arn           = aws_iam_role.cluster_autoscaler.arn
+    aws_load_balancer_controller_role_arn = aws_iam_role.aws_load_balancer_controller.arn
+    external_secrets_role_arn             = aws_iam_role.external_secrets.arn
+    external_dns_role_arn                 = aws_iam_role.external_dns.arn
+    external_dns_domains                  = [var.domain]
+    acm_arn                               = module.r53-acm.certificate_arn
+    argocd_hostname                       = format("argocd.%s", var.domain)
+    argocd_lb_name                        = var.cluster_name
+    acm_arn                               = module.r53-acm.certificate_arn
+  })]
 }
