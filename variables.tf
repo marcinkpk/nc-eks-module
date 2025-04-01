@@ -349,6 +349,9 @@ variable "domain" {
 }
 
 variable "vpc_cidr" {
-  type    = string
-  default = "172.16.0.0/16"
+  type = string
+}
+
+variable "certificate_arn" {
+  type = string
 }
