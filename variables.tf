@@ -321,11 +321,11 @@ variable "helm_charts" {
       template_file = "helm_values/aws-load-balancer-controller.tpl"
     }
     gateway-api-controller = {
-      repository    = "oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart "
-      version       = "v1.1.0"
+      repository    = "oci://public.ecr.aws/aws-application-networking-k8s/aws-gateway-controller-chart"
+      version       = "1.1.0"
       namespace     = "aws-application-networking-system"
       chart         = "gateway-api-controller"
-      template_file = "helm_values/aws-load-balancer-controller.tpl"
+      template_file = "helm_values/gateway-api-controller.tpl"
     }
     external-secrets = {
       repository    = "https://charts.external-secrets.io"
