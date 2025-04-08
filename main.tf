@@ -121,6 +121,21 @@ resource "aws_iam_role_policy_attachment" "external_dns" {
   role       = aws_iam_role.external_dns.name
 }
 
+resource "aws_iam_policy" "gateway_api_controller" {
+  name_prefix = format("%s-eks-gateway-api-controller", var.cluster_name)
+  policy      = data.aws_iam_policy_document.gateway_api_controller.json
+}
+
+resource "aws_iam_role" "gateway_api_controller" {
+  name               = format("%s-eks-gateway-api-controller", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.gateway_api_controller_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "gateway_api_controller" {
+  policy_arn = aws_iam_policy.gateway_api_controller.arn
+  role       = aws_iam_role.gateway_api_controller.name
+}
+
 
 ###
 ### eks control plane
@@ -332,7 +347,8 @@ resource "helm_release" "this" {
   depends_on = [
     aws_iam_role.aws_load_balancer_controller,
     aws_iam_role.external_secrets,
-    aws_iam_role.cluster_autoscaler
+    aws_iam_role.cluster_autoscaler,
+    aws_iam_role.gateway_api_controller
   ]
   for_each         = var.helm_charts
   name             = try(each.value["name"], each.key)
@@ -348,6 +364,7 @@ resource "helm_release" "this" {
     cluster_name                          = aws_eks_cluster.this.id
     cluster_autoscaler_role_arn           = aws_iam_role.cluster_autoscaler.arn
     aws_load_balancer_controller_role_arn = aws_iam_role.aws_load_balancer_controller.arn
+    gateway_api_controller_role_arn       = aws_iam_role.gateway_api_controller.arn
     external_secrets_role_arn             = aws_iam_role.external_secrets.arn
     external_dns_role_arn                 = aws_iam_role.external_dns.arn
     external_dns_domains                  = [var.domain]

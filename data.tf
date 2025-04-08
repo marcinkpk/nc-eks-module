@@ -586,3 +586,68 @@ data "aws_iam_policy_document" "external_dns" {
     resources = ["*"]
   }
 }
+
+data "aws_iam_policy_document" "gateway_api_controller_assume_role" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.this.arn]
+    }
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    condition {
+      test     = "StringEquals"
+      variable = format("%s:sub", trimprefix(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://"))
+      values   = ["system:serviceaccount:aws-application-networking-system:gateway-api-controller"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = format("%s:aud", trimprefix(aws_eks_cluster.this.identity[0].oidc[0].issuer, "https://"))
+      values   = ["sts.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "gateway_api_controller" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "vpc-lattice:*",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeTags",
+      "ec2:DescribeSecurityGroups",
+      "logs:CreateLogDelivery",
+      "logs:GetLogDelivery",
+      "logs:DescribeLogGroups",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "tag:GetResources",
+      "firehose:TagDeliveryStream",
+      "s3:GetBucketPolicy",
+      "s3:PutBucketPolicy"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:CreateServiceLinkedRole"
+    ]
+    resources = [
+      "arn:aws:iam::*:role/aws-service-role/vpc-lattice.amazonaws.com/AWSServiceRoleForVpcLattice"
+    ]
+    condition {
+      test     = "StringLike"
+      values   = ["delivery.logs.amazonaws.com"]
+      variable = "iam:AWSServiceName"
+    }
+  }
+}
