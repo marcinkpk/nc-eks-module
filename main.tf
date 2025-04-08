@@ -192,6 +192,20 @@ resource "aws_vpc_security_group_ingress_rule" "node_group_allow_itself" {
   description                  = "allow all traffic within the node group"
 }
 
+resource "aws_vpc_security_group_ingress_rule" "node_group_allow_vpc_lattice_ipv4" {
+  security_group_id = aws_security_group.node_group.id
+  ip_protocol       = "-1"
+  prefix_list_id    = data.aws_ec2_managed_prefix_list.vpc_lattice_ipv4.id
+  description       = "allow vpc lattice (ipv4)"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "node_group_allow_vpc_lattice_ipv6" {
+  security_group_id = aws_security_group.node_group.id
+  ip_protocol       = "-1"
+  prefix_list_id    = data.aws_ec2_managed_prefix_list.vpc_lattice_ipv6.id
+  description       = "allow vpc lattice (ipv6)"
+}
+
 resource "aws_eks_cluster" "this" {
   depends_on = [
     aws_iam_role_policy_attachment.control_plane

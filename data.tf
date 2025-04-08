@@ -651,3 +651,11 @@ data "aws_iam_policy_document" "gateway_api_controller" {
     }
   }
 }
+
+data "aws_ec2_managed_prefix_list" "vpc_lattice_ipv4" {
+  name = "com.amazonaws.${data.aws_region.this.name}.vpc-lattice"
+}
+
+data "aws_ec2_managed_prefix_list" "vpc_lattice_ipv6" {
+  name = "com.amazonaws.${data.aws_region.this.name}.ipv6.vpc-lattice"
+}
