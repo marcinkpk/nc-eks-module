@@ -17,3 +17,5 @@ deployment:
     nodeSelector:
       nodePurpose: system
     priorityClassName: system-cluster-critical
+
+defaultServiceNetwork: client-server-gateway
