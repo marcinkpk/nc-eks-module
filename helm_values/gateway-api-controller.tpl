@@ -18,4 +18,6 @@ deployment:
       nodePurpose: system
     priorityClassName: system-cluster-critical
 
-defaultServiceNetwork: client-server-gateway
+defaultServiceNetwork: client-server
+awsRegion: ${aws_region}
+clusterName: ${cluster_name)
