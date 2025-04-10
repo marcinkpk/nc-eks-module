@@ -20,4 +20,4 @@ deployment:
 
 defaultServiceNetwork: client-server
 awsRegion: ${aws_region}
-clusterName: ${cluster_name)
+clusterName: ${cluster_name}
