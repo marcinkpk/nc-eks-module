@@ -18,7 +18,6 @@ resource "aws_iam_role" "node_group" {
   assume_role_policy = data.aws_iam_policy_document.node_group_assume_role.json
 }
 
-
 resource "aws_iam_role_policy_attachment" "control_plane" {
   for_each = {
     control_plane_eks_cluster_policy          = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"

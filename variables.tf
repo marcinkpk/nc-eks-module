@@ -1,7 +1,3 @@
-variable "team_assume_role_principals" {
-  type = list(string)
-}
-
 variable "cluster_name" {
   type = string
 }
