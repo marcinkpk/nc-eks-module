@@ -8,11 +8,6 @@ resource "aws_iam_openid_connect_provider" "this" {
   url             = aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
-resource "aws_iam_role" "team" {
-  name               = format("%s-nc-workshop", var.cluster_name)
-  assume_role_policy = data.aws_iam_policy_document.team_assume_role.json
-}
-
 resource "aws_iam_role" "control_plane" {
   name               = format("%s-eks-control-plane", var.cluster_name)
   assume_role_policy = data.aws_iam_policy_document.control_plane_assume_role.json
@@ -23,10 +18,6 @@ resource "aws_iam_role" "node_group" {
   assume_role_policy = data.aws_iam_policy_document.node_group_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "team" {
-  role       = aws_iam_role.team.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
 
 resource "aws_iam_role_policy_attachment" "control_plane" {
   for_each = {
@@ -121,6 +112,21 @@ resource "aws_iam_role_policy_attachment" "external_dns" {
   role       = aws_iam_role.external_dns.name
 }
 
+resource "aws_iam_policy" "gateway_api_controller" {
+  name_prefix = format("%s-eks-gateway-api-controller", var.cluster_name)
+  policy      = data.aws_iam_policy_document.gateway_api_controller.json
+}
+
+resource "aws_iam_role" "gateway_api_controller" {
+  name               = format("%s-eks-gateway-api-controller", var.cluster_name)
+  assume_role_policy = data.aws_iam_policy_document.gateway_api_controller_assume_role.json
+}
+
+resource "aws_iam_role_policy_attachment" "gateway_api_controller" {
+  policy_arn = aws_iam_policy.gateway_api_controller.arn
+  role       = aws_iam_role.gateway_api_controller.name
+}
+
 
 ###
 ### eks control plane
@@ -175,6 +181,20 @@ resource "aws_vpc_security_group_ingress_rule" "node_group_allow_itself" {
   referenced_security_group_id = aws_security_group.node_group.id
   ip_protocol                  = "-1"
   description                  = "allow all traffic within the node group"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "node_group_allow_vpc_lattice_ipv4" {
+  security_group_id = aws_security_group.node_group.id
+  ip_protocol       = "-1"
+  prefix_list_id    = data.aws_ec2_managed_prefix_list.vpc_lattice_ipv4.id
+  description       = "allow vpc lattice (ipv4)"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "node_group_allow_vpc_lattice_ipv6" {
+  security_group_id = aws_security_group.node_group.id
+  ip_protocol       = "-1"
+  prefix_list_id    = data.aws_ec2_managed_prefix_list.vpc_lattice_ipv6.id
+  description       = "allow vpc lattice (ipv6)"
 }
 
 resource "aws_eks_cluster" "this" {
@@ -332,7 +352,8 @@ resource "helm_release" "this" {
   depends_on = [
     aws_iam_role.aws_load_balancer_controller,
     aws_iam_role.external_secrets,
-    aws_iam_role.cluster_autoscaler
+    aws_iam_role.cluster_autoscaler,
+    aws_iam_role.gateway_api_controller
   ]
   for_each         = var.helm_charts
   name             = try(each.value["name"], each.key)
@@ -348,6 +369,7 @@ resource "helm_release" "this" {
     cluster_name                          = aws_eks_cluster.this.id
     cluster_autoscaler_role_arn           = aws_iam_role.cluster_autoscaler.arn
     aws_load_balancer_controller_role_arn = aws_iam_role.aws_load_balancer_controller.arn
+    gateway_api_controller_role_arn       = aws_iam_role.gateway_api_controller.arn
     external_secrets_role_arn             = aws_iam_role.external_secrets.arn
     external_dns_role_arn                 = aws_iam_role.external_dns.arn
     external_dns_domains                  = [var.domain]

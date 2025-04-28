@@ -39,20 +39,21 @@ No modules.
 | [aws_iam_policy.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.external_dns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.external_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.gateway_api_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.aws_load_balancer_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.control_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.external_dns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.external_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.gateway_api_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.node_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role.team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.aws_load_balancer_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.control_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.external_dns](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.external_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.gateway_api_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.node_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.team](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_launch_template.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/launch_template) | resource |
 | [aws_security_group.control_plane](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.node_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
@@ -61,10 +62,14 @@ No modules.
 | [aws_vpc_security_group_ingress_rule.control_plane_allow_node_group_api](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [aws_vpc_security_group_ingress_rule.node_group_allow_control_plane_kubelet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [aws_vpc_security_group_ingress_rule.node_group_allow_itself](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
+| [aws_vpc_security_group_ingress_rule.node_group_allow_vpc_lattice_ipv4](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
+| [aws_vpc_security_group_ingress_rule.node_group_allow_vpc_lattice_ipv6](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule) | resource |
 | [helm_release.this](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [aws_ami.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_caller_identity.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_default_tags.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/default_tags) | data source |
+| [aws_ec2_managed_prefix_list.vpc_lattice_ipv4](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ec2_managed_prefix_list) | data source |
+| [aws_ec2_managed_prefix_list.vpc_lattice_ipv6](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ec2_managed_prefix_list) | data source |
 | [aws_iam_policy_document.aws_load_balancer_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.aws_load_balancer_controller_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -74,8 +79,9 @@ No modules.
 | [aws_iam_policy_document.external_dns_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.external_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.external_secrets_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.gateway_api_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.gateway_api_controller_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.node_group_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.team_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 | [cloudinit_config.eks_group](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [tls_certificate.this](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/data-sources/certificate) | data source |
@@ -95,7 +101,7 @@ No modules.
 | <a name="input_cluster_service_cidr"></a> [cluster\_service\_cidr](#input\_cluster\_service\_cidr) | n/a | `string` | `"172.20.0.0/16"` | no |
 | <a name="input_cluster_version"></a> [cluster\_version](#input\_cluster\_version) | n/a | `string` | n/a | yes |
 | <a name="input_domain"></a> [domain](#input\_domain) | n/a | `string` | n/a | yes |
-| <a name="input_helm_charts"></a> [helm\_charts](#input\_helm\_charts) | n/a | `any` | <pre>{<br/>  "argo-cd": {<br/>    "chart": "argo-cd",<br/>    "namespace": "argo-cd",<br/>    "repository": "https://argoproj.github.io/argo-helm",<br/>    "template_file": "helm_values/argo-cd.tpl",<br/>    "version": "7.6.12"<br/>  },<br/>  "aws-load-balancer-controller": {<br/>    "chart": "aws-load-balancer-controller",<br/>    "namespace": "aws-load-balancer-controller",<br/>    "repository": "https://aws.github.io/eks-charts",<br/>    "template_file": "helm_values/aws-load-balancer-controller.tpl",<br/>    "version": "1.8.1"<br/>  },<br/>  "cluster-autoscaler": {<br/>    "chart": "cluster-autoscaler",<br/>    "namespace": "cluster-autoscaler",<br/>    "repository": "https://kubernetes.github.io/autoscaler",<br/>    "template_file": "helm_values/cluster-autoscaler.tpl",<br/>    "version": "9.43.0"<br/>  },<br/>  "external-dns": {<br/>    "chart": "external-dns",<br/>    "namespace": "external-dns",<br/>    "repository": "https://kubernetes-sigs.github.io/external-dns",<br/>    "template_file": "./helm_values/external-dns.tpl",<br/>    "version": "1.15.0"<br/>  },<br/>  "external-secrets": {<br/>    "chart": "external-secrets",<br/>    "namespace": "external-secrets",<br/>    "repository": "https://charts.external-secrets.io",<br/>    "template_file": "helm_values/external-secrets.tpl",<br/>    "version": "0.10.4"<br/>  }<br/>}</pre> | no |
+| <a name="input_helm_charts"></a> [helm\_charts](#input\_helm\_charts) | n/a | `any` | <pre>{<br/>  "argo-cd": {<br/>    "chart": "argo-cd",<br/>    "namespace": "argo-cd",<br/>    "repository": "https://argoproj.github.io/argo-helm",<br/>    "template_file": "helm_values/argo-cd.tpl",<br/>    "version": "7.6.12"<br/>  },<br/>  "aws-load-balancer-controller": {<br/>    "chart": "aws-load-balancer-controller",<br/>    "namespace": "aws-load-balancer-controller",<br/>    "repository": "https://aws.github.io/eks-charts",<br/>    "template_file": "helm_values/aws-load-balancer-controller.tpl",<br/>    "version": "1.8.1"<br/>  },<br/>  "cluster-autoscaler": {<br/>    "chart": "cluster-autoscaler",<br/>    "namespace": "cluster-autoscaler",<br/>    "repository": "https://kubernetes.github.io/autoscaler",<br/>    "template_file": "helm_values/cluster-autoscaler.tpl",<br/>    "version": "9.43.0"<br/>  },<br/>  "external-dns": {<br/>    "chart": "external-dns",<br/>    "namespace": "external-dns",<br/>    "repository": "https://kubernetes-sigs.github.io/external-dns",<br/>    "template_file": "./helm_values/external-dns.tpl",<br/>    "version": "1.15.0"<br/>  },<br/>  "external-secrets": {<br/>    "chart": "external-secrets",<br/>    "namespace": "external-secrets",<br/>    "repository": "https://charts.external-secrets.io",<br/>    "template_file": "helm_values/external-secrets.tpl",<br/>    "version": "0.10.4"<br/>  },<br/>  "gateway-api-controller": {<br/>    "chart": "aws-gateway-controller-chart",<br/>    "namespace": "aws-application-networking-system",<br/>    "repository": "oci://public.ecr.aws/aws-application-networking-k8s",<br/>    "template_file": "helm_values/gateway-api-controller.tpl",<br/>    "version": "v1.1.0"<br/>  }<br/>}</pre> | no |
 | <a name="input_team_assume_role_principals"></a> [team\_assume\_role\_principals](#input\_team\_assume\_role\_principals) | n/a | `list(string)` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
 | <a name="input_vpc_private_subnet_ids"></a> [vpc\_private\_subnet\_ids](#input\_vpc\_private\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
