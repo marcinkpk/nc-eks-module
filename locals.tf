@@ -4,7 +4,7 @@ locals {
     flatten([
       for permission_set, config in var.cluster_map_roles : {
         name     = permission_set
-        rolearn  = aws_iam_role.team.arn
+        rolearn  = var.team_role_arn
         username = config.username
         groups   = config.groups
       }
