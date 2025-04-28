@@ -37,21 +37,6 @@ data "cloudinit_config" "eks_group" {
   }
 }
 
-data "aws_iam_policy_document" "team_assume_role" {
-  statement {
-    sid    = "TeamAssumeRole"
-    effect = "Allow"
-    actions = [
-      "sts:AssumeRole"
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = var.team_assume_role_principals
-    }
-  }
-}
-
-
 data "aws_iam_policy_document" "control_plane_assume_role" {
   statement {
     sid    = "EKSControlPlaneAssumeRole"

@@ -8,11 +8,6 @@ resource "aws_iam_openid_connect_provider" "this" {
   url             = aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
-resource "aws_iam_role" "team" {
-  name               = format("%s-nc-workshop", var.cluster_name)
-  assume_role_policy = data.aws_iam_policy_document.team_assume_role.json
-}
-
 resource "aws_iam_role" "control_plane" {
   name               = format("%s-eks-control-plane", var.cluster_name)
   assume_role_policy = data.aws_iam_policy_document.control_plane_assume_role.json
@@ -23,10 +18,6 @@ resource "aws_iam_role" "node_group" {
   assume_role_policy = data.aws_iam_policy_document.node_group_assume_role.json
 }
 
-resource "aws_iam_role_policy_attachment" "team" {
-  role       = aws_iam_role.team.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
-}
 
 resource "aws_iam_role_policy_attachment" "control_plane" {
   for_each = {
