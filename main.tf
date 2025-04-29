@@ -219,9 +219,9 @@ resource "aws_eks_cluster" "this" {
   }
 }
 
-#resource "kubectl_manifest" "aws_auth_cm" {
-#  yaml_body = yamlencode(local.aws_auth_cm)
-#}
+resource "kubectl_manifest" "aws_auth_cm" {
+  yaml_body = yamlencode(local.aws_auth_cm)
+}
 
 resource "aws_eks_addon" "this" {
   for_each                    = var.cluster_addons
