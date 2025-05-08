@@ -1,10 +1,9 @@
 locals {
   map_roles = concat(
-    # woitekku backdoor
     flatten([
       for permission_set, config in var.cluster_map_roles : {
         name     = permission_set
-        rolearn  = "arn:aws:iam::164820026678:root"
+        rolearn  = "arn:aws:iam::038492037104:root"
         username = config.username
         groups   = config.groups
       }
